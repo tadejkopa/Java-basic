@@ -1,0 +1,144 @@
+    SELECT osb.naziv1
+      ||' '
+      ||osb.naziv2 oseba ,
+      osb.sifra_osebe ,
+      klv.naziv1
+      ||' '
+      ||klv.naziv2 klavnica ,
+      klv.sifra_cr ,
+      gvd.star_kat ,
+      gvd.plac_raz ,
+      COUNT(*) stevilo ,
+      trim(TO_CHAR(SUM(gvd.topla_teza),'99G999G990D0')) teza
+    FROM spz_goveda gvd ,
+      spz_klavnice klv ,
+      spz_osebe osb
+    WHERE klv.id_klv    = ?
+    AND gvd.id_klv      = klv.id_klv
+    AND gvd.status     IN ('2','3','5','7','8')
+    AND gvd.id_psr      = osb.id_osb
+ --   AND osb.sifra_osebe = '1014'
+    AND osb.status      = '2'
+    AND gvd.star_kat    = ?
+    AND TRUNC(gvd.dt_klanja) BETWEEN TRUNC(to_date('01.01.09', 'dd.mm.rr')) AND TRUNC(to_date('31.12.15', 'dd.mm.rr'))
+    GROUP BY osb.naziv1
+      ||' '
+      ||osb.naziv2 ,
+      osb.sifra_osebe ,
+      klv.naziv1
+      ||' '
+      ||klv.naziv2 ,
+      klv.sifra_cr ,
+      gvd.star_kat ,
+      gvd.plac_raz
+    ORDER BY gvd.star_kat ,
+      gvd.plac_raz 
+      
+      
+      
+      /*2*/
+      
+          SELECT osb.naziv1
+      ||' '
+      ||osb.naziv2 oseba ,
+      osb.sifra_osebe ,
+      klv.naziv1
+      ||' '
+      ||klv.naziv2 klavnica ,
+      klv.sifra_cr ,
+      gvd.star_kat ,
+      gvd.plac_raz ,
+      gvd.dt_klanja ,
+      COUNT(*) stevilo ,
+      trim(TO_CHAR(SUM(gvd.topla_teza),'99G999G990D0')) teza
+    FROM spz_goveda gvd ,
+      spz_klavnice klv ,
+      spz_osebe osb
+    WHERE klv.id_klv    = '6'
+    AND gvd.id_klv      = klv.id_klv
+    AND gvd.status     IN ('2','3','5','7','8')
+    AND gvd.id_psr      = osb.id_osb
+   AND osb.sifra_osebe = '1063'
+    AND osb.status      = '2'
+   AND gvd.plac_raz IS NOT NULL
+   AND TRUNC(gvd.dt_klanja) BETWEEN TRUNC(to_date('01.01.04', 'dd.mm.rr')) AND TRUNC(to_date('31.12.04', 'dd.mm.rr'))
+    GROUP BY osb.naziv1
+      ||' '
+      ||osb.naziv2 ,
+      osb.sifra_osebe ,
+      klv.naziv1
+      ||' '
+      ||klv.naziv2 ,
+      klv.sifra_cr ,
+      gvd.star_kat ,
+      gvd.plac_raz,
+      gvd.dt_klanja
+    ORDER BY gvd.star_kat ,
+      gvd.plac_raz;
+      
+      /*3*/
+      
+      SELECT osb.naziv1
+      ||' '
+      ||osb.naziv2 oseba ,
+      osb.sifra_osebe ,
+      klv.naziv1
+      ||' '
+      ||klv.naziv2 klavnica ,
+      klv.sifra_cr ,
+      gvd.star_kat ,
+      gvd.plac_raz ,
+      COUNT(*) stevilo ,
+      trim(TO_CHAR(SUM(gvd.topla_teza),'99G999G990D0')) teza
+    FROM spz_goveda gvd ,
+      spz_klavnice klv ,
+      spz_osebe osb
+    WHERE klv.id_klv    = ?
+    AND gvd.id_klv      = klv.id_klv
+    AND gvd.status     IN ('2','3','5','7','8')
+    AND gvd.id_psr      = osb.id_osb
+    AND osb.sifra_osebe = '1063'
+    AND osb.status      = '2'
+    AND gvd.star_kat    = ?
+    AND TRUNC(gvd.dt_klanja) BETWEEN TRUNC(to_date('01.01.04', 'dd.mm.rr')) AND TRUNC(to_date('31.12.04', 'dd.mm.rr'))
+    GROUP BY osb.naziv1
+      ||' '
+      ||osb.naziv2 ,
+      osb.sifra_osebe ,
+      klv.naziv1
+      ||' '
+      ||klv.naziv2 ,
+      klv.sifra_cr ,
+      gvd.star_kat ,
+      gvd.plac_raz
+    ORDER BY gvd.star_kat ,
+      gvd.plac_raz 
+      
+      /*4*/
+      SELECT star_kat, placilni_razred plac_raz, stevilo, teza FROM (    SELECT      
+      gvd.star_kat ,
+      gvd.plac_raz ,
+      COUNT(*) stevilo ,
+      trim(TO_CHAR(SUM(gvd.topla_teza),'99G999G990D0')) teza
+    FROM spz_goveda gvd ,
+      spz_klavnice klv ,
+      spz_osebe osb 
+    WHERE klv.id_klv    = ?
+    AND gvd.id_klv      = klv.id_klv
+    AND gvd.status     IN ('2','3','5','7','8')
+    AND gvd.id_psr      = osb.id_osb
+   AND osb.sifra_osebe = '1063'
+    AND osb.status      = '2'
+   AND gvd.plac_raz IS NOT NULL
+   AND gvd.star_kat    = ?
+   AND TRUNC(gvd.dt_klanja) BETWEEN TRUNC(to_date('01.01.04', 'dd.mm.rr')) AND TRUNC(to_date('31.12.04', 'dd.mm.rr'))
+    GROUP BY      
+      gvd.star_kat ,
+      gvd.plac_raz
+    ORDER BY gvd.star_kat ,
+      gvd.plac_raz
+ ) a, (select level as placilni_razred from dual connect by level <= 6) b
+ WHERE
+ a.plac_raz(+) = b.placilni_razred
+ ORDER BY
+plac_raz ASC
